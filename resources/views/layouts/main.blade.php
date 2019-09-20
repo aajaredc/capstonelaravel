@@ -13,7 +13,11 @@
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+
+    <!-- Data Tables-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
 	</head>
 
 	<body>
@@ -24,7 +28,11 @@
 				<i id="sidebar-toggle" class="fas fa-fw fa-bars" style="font-size: 1.25em"></i>
 			</span>
 			<span class="navbar-text ml-auto">
-				Welcome, {{ Auth::user()->username }}. <a href="signout.php">Sign Out</a>
+				Welcome, {{ Auth::user()->username }}.
+        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Sign Out</a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
 			</span>
 	  </nav>
 
@@ -158,7 +166,6 @@
 						</div>
 					</li>
 			</ul>
-			<script type="text/javascript" src="scripts/sidebar.js"></script>
 			<div id="wrapper">
 				<div class="container-fluid">
 
@@ -168,4 +175,8 @@
       </div>
     </div>
   </body>
+
+  <div>
+    @yield('additional')
+  </div>
 </html>
