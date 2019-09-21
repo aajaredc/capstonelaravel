@@ -11,6 +11,8 @@ class InventoryItemsController extends Controller
 {
     public function index()
     {
+      $this->authorize('viewAny', InventoryItem::class);
+
       $items = InventoryItem::all();
       $types = InventoryType::all();
 
