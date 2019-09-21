@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\UserType;
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
@@ -20,6 +22,25 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
+    /**
+     * The user has been authenticated.
+     * @override
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
+     */
+    protected function authenticated(Request $request, $user)
+    {
+      // Set session data
+      session(
+          [
+              'permission' => UserType::where('id', $user->user_type_id)->value('flags')
+          ]
+      );
+    }
+
+
     // Customize the username from default (email) to username
     public function username()
     {
@@ -31,7 +52,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     /**
      * Create a new controller instance.

@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\User;
 use App\UserType;
 use App\InventoryItem;
+use Session;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class InventoryItemPolicy
@@ -19,7 +20,7 @@ class InventoryItemPolicy
      */
     public function viewAny(User $user)
     {
-      $permission = UserType::where('id', $user->user_type_id)->value('flags');
+      $permission = Session::get('permission');
 
       if ($permission & 1) {
         return true;
