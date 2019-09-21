@@ -33,12 +33,17 @@ class InventoryItemPolicy
      * Determine whether the user can view the inventory item.
      *
      * @param  \App\User  $user
-     * @param  \App\InventoryItem  $inventoryItem
      * @return mixed
      */
-    public function view(User $user, InventoryItem $inventoryItem)
+    public function view(User $user)
     {
-        //
+      $permission = Session::get('permission');
+
+      if ($permission & 2) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**

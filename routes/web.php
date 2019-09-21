@@ -11,12 +11,9 @@
 |
 */
 
-Route::get('/welcome', function () {
-    return view('welcome');
-});
-
 Auth::routes();
 
 Route::get('/', 'HomeController@index')->name('home');
 
-Route::get('/inventoryitems', 'InventoryItemsController@index')->name('selectinventoryitems');
+Route::get('/inventoryitems', 'InventoryItemsController@index')->name('indexinventoryitem');
+Route::get('/inventoryitems/{id}', 'InventoryItemsController@show')->name('showinventoryitem');

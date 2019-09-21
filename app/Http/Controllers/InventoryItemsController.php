@@ -16,6 +16,16 @@ class InventoryItemsController extends Controller
       $items = InventoryItem::all();
       $types = InventoryType::all();
 
-      return view('selectinventoryitems', compact('items', 'types'));
+      return view('indexinventoryitem', compact('items', 'types'));
+    }
+
+    public function show($id)
+    {
+      $this->authorize('view', InventoryItem::class);
+
+      $item = InventoryItem::where('id', $id)->first();
+      $type = InventoryType::where('id', $item->inventory_type_id)->first();
+
+      return view('showinventoryitem', compact('item', 'type'));
     }
 }
