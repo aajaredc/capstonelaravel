@@ -28,4 +28,14 @@ class InventoryItemsController extends Controller
 
       return view('showinventoryitem', compact('item', 'type'));
     }
+
+    public function edit($id)
+    {
+      $this->authorize('update', InventoryItem::class);
+
+      $item = InventoryItem::where('id', $id)->first();
+      $types = InventoryType::where('id', $item->inventory_type_id)->first();
+
+      return view('editinventoryitem', compact('item', 'types'));
+    }
 }

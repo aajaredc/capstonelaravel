@@ -7,7 +7,7 @@
   <div class="card">
   	<div class="card-header">Inventory Items</div>
   	<div class="card-body">
-      <table class="table table-bordered" id="selectTable" width="100%" cellspacing="0">
+      <table class="table table-bordered w-100" id="selectTable" width="100%" cellspacing="0">
         <thead>
           <tr>
             <th>Name</th>
@@ -16,7 +16,10 @@
             <th>Count</th>
             <th>Description</th>
             @can('view', App\InventoryItem::class)
-              <th></th>
+              <th class="fit"></th>
+            @endcan
+            @can('update', App\InventoryItem::class)
+              <th class="fit"></th>
             @endcan
           </tr>
         </thead>
@@ -29,7 +32,20 @@
               <td>{{ $item->count }}</td>
               <td>{{ $item->description }}</td>
               @can('view', App\InventoryItem::class)
-                <td><a class="btn btn-primary">Select</a></td>
+                <td>
+                  <form method="get" action="/inventoryitems/{{ $item->id }}" class="d-inline-block">
+                    @csrf
+                    <input type="submit" value="Select"/>
+                  </form>
+                </td>
+              @endcan
+              @can('update', App\InventoryItem::class)
+                <td>
+                  <form method="get" action="/inventoryitems/{{ $item->id }}/edit" class="d-inline-block">
+                    @csrf
+                    <input type="submit" value="Edit"/>
+                  </form>
+                </td>
               @endcan
             </tr>
           @endforeach
@@ -43,7 +59,7 @@
   <script>
     $(document).ready( function () {
         $('#selectTable').DataTable({
-
+          responsive: true
         });
     });
   </script>

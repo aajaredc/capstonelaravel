@@ -7,6 +7,12 @@ body {
 	display: flex;
 }
 
+.table td.fit,
+.table th.fit {
+    white-space: nowrap;
+    width: 1%;
+}
+
 .sidebar {
 	width: 220px;
 	background-color: #212529;

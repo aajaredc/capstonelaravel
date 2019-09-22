@@ -22,7 +22,7 @@ class InventoryItemPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission & 1) {
+      if ($permission | 1) {
         return true;
       } else {
         return false;
@@ -39,7 +39,7 @@ class InventoryItemPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission & 2) {
+      if ($permission | 2) {
         return true;
       } else {
         return false;
@@ -61,12 +61,17 @@ class InventoryItemPolicy
      * Determine whether the user can update the inventory item.
      *
      * @param  \App\User  $user
-     * @param  \App\InventoryItem  $inventoryItem
      * @return mixed
      */
-    public function update(User $user, InventoryItem $inventoryItem)
+    public function update(User $user)
     {
-        //
+      $permission = Session::get('permission');
+
+      if ($permission | 8) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**
