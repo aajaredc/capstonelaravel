@@ -14,45 +14,42 @@ class InventoryItemsController extends Controller
     {
       $this->authorize('viewAny', InventoryItem::class);
 
-      $items = InventoryItem::all();
+      $inventoryItems = InventoryItem::all();
       $types = InventoryType::all();
 
-      return view('indexinventoryitem', compact('items', 'types'));
+      return view('inventoryitem.indexinventoryitem', compact('inventoryItems', 'types'));
     }
 
-    public function show($id)
+    public function show(InventoryItem $inventoryItem)
     {
       $this->authorize('view', InventoryItem::class);
 
-      $item = InventoryItem::where('id', $id)->first();
-      $type = InventoryType::where('id', $item->inventory_type_id)->first();
+      $type = InventoryType::where('id', $inventoryItem->inventory_type_id)->first();
 
-      return view('showinventoryitem', compact('item', 'type'));
+      return view('inventoryitem.showinventoryitem', compact('inventoryItem', 'type'));
     }
 
-    public function edit($id)
+    public function edit(InventoryItem $inventoryItem)
     {
       $this->authorize('update', InventoryItem::class);
 
-      $item = InventoryItem::where('id', $id)->first();
-      $types = InventoryType::where('id', $item->inventory_type_id)->get();
+      $types = InventoryType::where('id', $inventoryItem->inventory_type_id)->get();
 
-      return view('editinventoryitem', compact('item', 'types'));
+      return view('inventoryitem.editinventoryitem', compact('inventoryItem', 'types'));
     }
 
-    public function update($id)
+    public function update(InventoryItem $inventoryItem)
     {
       $this->authorize('update', InventoryItem::class);
 
-      $item = InventoryItem::find($id);
-      $item->name = request('name');
-      $item->inventory_type_id = request('type');
-      $item->price = request('price');
-      $item->count = request('count');
-      $item->description = request('description');
-      $item->save();
+      $inventoryItem->name = request('name');
+      $inventoryItem->inventory_type_id = request('type');
+      $inventoryItem->price = request('price');
+      $inventoryItem->count = request('count');
+      $inventoryItem->description = request('description');
+      $inventoryItem->save();
 
-      return redirect('/inventoryitems/' . $id);
+      return redirect('/inventoryitems/' . $inventoryItem->id)->with('updated', $inventoryItem);
     }
 
     public function create()
@@ -61,7 +58,7 @@ class InventoryItemsController extends Controller
 
       $types = InventoryType::all();
 
-      return view('createinventoryitem', compact('types'));
+      return view('inventoryitem.createinventoryitem', compact('types'));
     }
 
     public function store()
@@ -82,25 +79,23 @@ class InventoryItemsController extends Controller
             ->withInput();
       }
 
-      $id = DB::table('inventory_items')->insertGetId(
-          [
-            'name' => request('name'),
-            'inventory_type_id' => request('type'),
-            'price' => request('price'),
-            'count' => request('count'),
-            'description' => request('description')
-          ]
-      );
+      $inventoryItem = new InventoryItem();
+      $inventoryItem->name = request('name');
+      $inventoryItem->inventory_type_id = request('type');
+      $inventoryItem->price = request('price');
+      $inventoryItem->count = request('count');
+      $inventoryItem->description = request('description');
+      $inventoryItem->save();
 
-      return redirect('/inventoryitems/' . $id)->with('success', $id);
+      return redirect('/inventoryitems/' . $inventoryItem->id)->with('success', $inventoryItem);
     }
 
-    public function destroy($id)
+    public function destroy(InventoryItem $inventoryItem)
     {
       $this->authorize('delete', InventoryItem::class);
 
-      InventoryItem::find($id)->delete();
+      $inventoryItem->delete();
 
-      return redirect('/inventoryitems')->with('deleted', $id);
+      return redirect('/inventoryitems')->with('deleted', $inventoryItem);
     }
 }

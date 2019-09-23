@@ -30,16 +30,16 @@
           </tr>
         </thead>
         <tbody>
-          @foreach ($items as $item)
+          @foreach ($inventoryItems as $inventoryItem)
             <tr>
-              <td>{{ $item->name }}</td>
-              <td>{{ DB::table('inventory_types')->where('id', $item->inventory_type_id)->value('name') }}</td>
-              <td>{{ $item->price }}</td>
-              <td>{{ $item->count }}</td>
-              <td>{{ $item->description }}</td>
+              <td>{{ $inventoryItem->name }}</td>
+              <td>{{ DB::table('inventory_types')->where('id', $inventoryItem->inventory_type_id)->value('name') }}</td>
+              <td>{{ $inventoryItem->price }}</td>
+              <td>{{ $inventoryItem->count }}</td>
+              <td>{{ $inventoryItem->description }}</td>
               @can('view', App\InventoryItem::class)
                 <td>
-                  <form method="get" action="/inventoryitems/{{ $item->id }}" class="d-inline-block">
+                  <form method="get" action="/inventoryitems/{{ $inventoryItem->id }}" class="d-inline-block">
                     @csrf
                     <input type="submit" value="Select"/>
                   </form>
@@ -47,7 +47,7 @@
               @endcan
               @can('update', App\InventoryItem::class)
                 <td>
-                  <form method="get" action="/inventoryitems/{{ $item->id }}/edit" class="d-inline-block">
+                  <form method="get" action="/inventoryitems/{{ $inventoryItem->id }}/edit" class="d-inline-block">
                     @csrf
                     <input type="submit" value="Edit"/>
                   </form>
@@ -55,7 +55,7 @@
               @endcan
               @can('delete', App\InventoryItem::class)
                 <td>
-                  <form method="post" action="/inventoryitems/{{ $item->id }}" class="d-inline-block">
+                  <form method="post" action="/inventoryitems/{{ $inventoryItem->id }}" class="d-inline-block">
                     {{ method_field('DELETE') }}
                     @csrf
                     <input type="submit" value="Delete"/>

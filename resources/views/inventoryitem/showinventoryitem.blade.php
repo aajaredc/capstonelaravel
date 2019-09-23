@@ -6,16 +6,19 @@
     <li class="breadcrumb-item active" aria-current="page">Show</li>
   </ol>
   <div class="card">
-  	<div class="card-header">Information for Inventory Item {{ $item->id }}</div>
+  	<div class="card-header">Information for Inventory Item {{ $inventoryItem->id }}</div>
   	<div class="card-body">
       @if (session()->has('success'))
         <div class="alert alert-success" role="alert">Successfully created new Inventory Item</div>
+      @endif
+      @if (session()->has('updated'))
+        <div class="alert alert-success" role="alert">Successfully updated Inventory Item</div>
       @endif
       <table class="table table-bordered" width="100%" cellspacing="0">
         <tbody>
           <tr>
             <th>Name</th>
-            <td>{{ $item->name }}</td>
+            <td>{{ $inventoryItem->name }}</td>
           </tr>
           <tr>
             <th>Category</th>
@@ -23,15 +26,23 @@
           </tr>
           <tr>
             <th>Price</th>
-            <td>{{ $item->price }}</td>
+            <td>{{ $inventoryItem->price }}</td>
           </tr>
           <tr>
             <th>Count</th>
-            <td>{{ $item->count }}</td>
+            <td>{{ $inventoryItem->count }}</td>
           </tr>
           <tr>
             <th>Description</th>
-            <td>{{ $item->description }}</td>
+            <td>{{ $inventoryItem->description }}</td>
+          </tr>
+          <tr>
+            <th>Created</th>
+            <td>{{ $inventoryItem->created_at }}</td>
+          </tr>
+          <tr>
+            <th>Last Updated</th>
+            <td>{{ $inventoryItem->updated_at }}</td>
           </tr>
         </tbody>
       </table>
