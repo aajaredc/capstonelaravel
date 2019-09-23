@@ -8,6 +8,9 @@
   <div class="card">
   	<div class="card-header">Information for Inventory Item {{ $item->id }}</div>
   	<div class="card-body">
+      @if (session()->has('success'))
+        <div class="alert alert-success" role="alert">Successfully created new Inventory Item</div>
+      @endif
       <table class="table table-bordered" width="100%" cellspacing="0">
         <tbody>
           <tr>

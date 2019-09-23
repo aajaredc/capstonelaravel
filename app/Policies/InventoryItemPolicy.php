@@ -39,7 +39,7 @@ class InventoryItemPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 2) {
+      if ($permission | 1) {
         return true;
       } else {
         return false;
@@ -54,7 +54,13 @@ class InventoryItemPolicy
      */
     public function create(User $user)
     {
-        //
+      $permission = Session::get('permission');
+
+      if ($permission | 2) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**
@@ -67,7 +73,7 @@ class InventoryItemPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 8) {
+      if ($permission | 4) {
         return true;
       } else {
         return false;
@@ -78,12 +84,17 @@ class InventoryItemPolicy
      * Determine whether the user can delete the inventory item.
      *
      * @param  \App\User  $user
-     * @param  \App\InventoryItem  $inventoryItem
      * @return mixed
      */
-    public function delete(User $user, InventoryItem $inventoryItem)
+    public function delete(User $user)
     {
-        //
+      $permission = Session::get('permission');
+
+      if ($permission | 8) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**
