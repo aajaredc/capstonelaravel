@@ -15,6 +15,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'App\InventoryItem' => 'App\Policies\InventoryItemPolicy',
         'App\InventoryType' => 'App\Policies\InventoryTypePolicy',
+        'App\UserType' => 'App\Policies\UserPolicy',
     ];
 
     /**

@@ -32,3 +32,12 @@ Route::post('/inventorytypes', 'InventoryTypesController@store')->name('storeinv
 Route::get('/inventorytypes/{inventoryType}/edit', 'InventoryTypesController@edit')->name('editinventorytype');
 Route::patch('/inventorytypes/{inventoryType}', 'InventoryTypesController@update')->name('updateinventorytype');
 Route::delete('/inventorytypes/{inventoryType}', 'InventoryTypesController@destroy')->name('destroyinventorytype');
+
+// Users
+Route::get('/users', 'UsersController@index')->name('indexuser');
+Route::get('/users/create', 'UsersController@create')->name('createuser');
+Route::get('/users/{user}', 'UsersController@show')->name('showuser');
+Route::post('/users', 'UsersController@store')->name('storeuser');
+Route::get('/users/{user}/edit', 'UsersController@edit')->name('edituser');
+Route::patch('/users/{user}', 'UsersController@update')->name('updateuser');
+Route::delete('/users/{user}', 'UsersController@destroy')->name('destroyuser');
