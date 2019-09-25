@@ -33,7 +33,7 @@ class InventoryItemsController extends Controller
     {
       $this->authorize('update', InventoryItem::class);
 
-      $types = InventoryType::where('id', $inventoryItem->inventory_type_id)->get();
+      $types = InventoryType::all();
 
       return view('inventoryitem.editinventoryitem', compact('inventoryItem', 'types'));
     }

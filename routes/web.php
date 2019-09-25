@@ -41,3 +41,13 @@ Route::post('/users', 'UsersController@store')->name('storeuser');
 Route::get('/users/{user}/edit', 'UsersController@edit')->name('edituser');
 Route::patch('/users/{user}', 'UsersController@update')->name('updateuser');
 Route::delete('/users/{user}', 'UsersController@destroy')->name('destroyuser');
+
+// Orders
+Route::get('/orders', 'OrdersController@index')->name('indexorder');
+Route::get('/orders/create', 'OrdersController@create')->name('createorder');
+Route::post('/orders/create', 'OrdersController@create')->name('createorderpost');
+Route::get('/orders/{order}', 'OrdersController@show')->name('showorder');
+Route::post('/orders', 'OrdersController@store')->name('storeorder');
+Route::get('/orders/{order}/edit', 'OrdersController@edit')->name('editorder');
+Route::patch('/orders/{order}', 'OrdersController@update')->name('updateorder');
+Route::delete('/orders/{order}', 'OrdersController@destroy')->name('destroyorder');
