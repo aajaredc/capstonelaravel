@@ -9,7 +9,7 @@
   	<div class="card-header">Create Order</div>
   	<div class="card-body">
       @if ($errors->any())
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-danger" role="alert">
           <ul class="mb-0">
             @foreach ($errors->all() as $error)
               <li>{{ $error }}</li>
@@ -57,15 +57,6 @@
   <div class="card mt-3">
   	<div class="card-header">Order Details</div>
   	<div class="card-body">
-      @if ($errors->any())
-        <div class="alert alert-warning" role="alert">
-          <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-              <li>{{ $error }}</li>
-            @endforeach
-          </ul>
-        </div>
-      @endif
       <div id="order-details">
         <table class="table">
           <tbody>
@@ -87,6 +78,7 @@
                       @csrf
                       <input name="orderdetailid" type="hidden" value="{{ $detail->id }}" />
                       <input name="inventoryitems" type="hidden" value="{{ json_encode($orderitems)}}" />
+                      <input name="orderdetails" value="{{ json_encode($orderdetails) }}" type="hidden">
                       <input name="edit" type="submit" value="Edit" />
                     </form>
                   </td>
@@ -138,6 +130,7 @@
                 <td>
                   <input type="hidden" name="orderdetailid" value="{{ $_POST['orderdetailid'] }}"/>
                   <input name="inventoryitems" type="hidden" value="{{ json_encode($orderitems)}}" />
+                  <input name="orderdetails" value="{{ json_encode($orderdetails) }}" type="hidden">
                   <input type="submit" name="editsubmit" value="Save"/>
                 </td>
               </tr>

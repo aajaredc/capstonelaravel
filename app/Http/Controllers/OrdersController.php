@@ -9,6 +9,9 @@ use App\InventoryType;
 use Illuminate\Http\Request;
 use DB;
 use Auth;
+use Validator;
+use App\Location;
+use App\User;
 
 class OrdersController extends Controller
 {
@@ -19,7 +22,9 @@ class OrdersController extends Controller
      */
     public function index()
     {
-        //
+      $orders = Order::all();
+
+      return view('order.indexorders', compact('orders'));
     }
 
     /**
@@ -52,27 +57,32 @@ class OrdersController extends Controller
             $orderitems = array_values(json_decode($inventoryitems, true));
             array_push($orderitems, request('inventoryitem'));
           }
-        } else {
+        }
+        else {
           $orderitems = array_values(json_decode($inventoryitems, true));
           if ($request->has('deletesubmit')) {
             unset($orderitems[$orderdetailid]);
           }
         }
 
-        foreach ($orderitems as $orderitem) {
-          $orderdetail = new OrderDetail();
-          $orderdetail->id = count($orderdetails); // temp id
-          $orderdetail->inventory_item_id = $orderitem;
-          // this doesn't work for some reason
-          // $orderdetail->price = $items->find($orderdetail->inventory_item_id)->value('price');
-          $orderdetail->price = DB::table('inventory_items')->where('id', $orderdetail->inventory_item_id)->value('price');
-          $orderdetail->note = NULL;
+        if ($request->has('orderdetails')) {
+          $orderdetails = json_decode(request('orderdetails'), false);
+        } else {
+          foreach ($orderitems as $orderitem) {
+            $orderdetail = new OrderDetail();
+            $orderdetail->id = count($orderdetails); // temp id
+            $orderdetail->inventory_item_id = $orderitem;
+            // this doesn't work for some reason
+            // $orderdetail->price = $items->find($orderdetail->inventory_item_id)->value('price');
+            $orderdetail->price = DB::table('inventory_items')->where('id', $orderdetail->inventory_item_id)->value('price');
+            $orderdetail->note = NULL;
 
-          array_push($orderdetails, $orderdetail);
+            array_push($orderdetails, $orderdetail);
+          }
         }
 
 
-        $itemOccurences = array_count_values($orderitems);        
+        $itemOccurences = array_count_values($orderitems);
 
         if ($request->has('editsubmit')) {
           if ($request->has('price')) {
@@ -101,8 +111,43 @@ class OrdersController extends Controller
     public function store(Request $request)
     {
 
-      $orderdetails = $request->orderdetails;
-      $orderdetails = json_decode($orderdetails);
+      try {
+        $orderdetails = $request->orderdetails;
+        $orderdetails = json_decode($orderdetails);
+
+        // Get the number of item occurences
+        $itemOccurences = array();
+        foreach ($orderdetails as $detail) {
+          array_push($itemOccurences, $detail->inventory_item_id);
+        }
+        $itemOccurences = array_count_values($itemOccurences);
+      } catch (\Exception $e) {
+
+      }
+
+
+      // Validation
+      $validator = Validator::make(request()->all(), [
+        'orderdetails' => 'required|json'
+      ]);
+
+      try {
+        foreach ($orderdetails as $detail) {
+          if ($itemOccurences[$detail->inventory_item_id] > InventoryItem::find($detail->inventory_item_id)->value('count')) {
+            $validator->after(function ($validator) {
+              $validator->errors()->add('invaliditemcount', 'An invalid number of items was ordered.');
+            });
+          }
+        }
+      } catch (\Exception $e) {
+
+      }
+
+
+      if ($validator->fails()) {
+          return redirect('/orders/create')
+            ->withErrors($validator);
+      }
 
       $order = new Order();
       $order->user_id = Auth::user()->id;
@@ -131,7 +176,11 @@ class OrdersController extends Controller
      */
     public function show(Order $order)
     {
-        //
+      $user = User::find($order->user_id);
+      $location = Location::find($order->location_id);
+      $details = OrderDetail::all()->where('order_id', $order->id);
+
+      return view('order.showorder', compact('details', 'order', 'user', 'location'));
     }
 
     /**
@@ -165,6 +214,15 @@ class OrdersController extends Controller
      */
     public function destroy(Order $order)
     {
-        //
+      $this->authorize('delete', Order::class);
+
+      $order->delete();
+      $details = OrderDetail::all()->where('order_id', $order->id);
+
+      foreach ($details as $detail) {
+        $detail->delete();
+      }
+
+      return redirect('/orders')->with('deleted', $order);
     }
 }
