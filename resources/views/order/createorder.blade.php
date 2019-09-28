@@ -1,5 +1,9 @@
 @extends('layouts.main')
 
+@section('meta')
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+@endsection
+
 @section('content')
   <ol class="breadcrumb">
   	<li class="breadcrumb-item"><a href="/orders/create">Orders</a></li>
@@ -29,12 +33,10 @@
                   @foreach ($items->where('inventory_type_id', $type->id) as $item)
                     <tr>
                       <td>
-                        <form method="post" action="{{ route('createorderpost') }}">
+                        <form class="add-item" data-itemid="{{ $item->id }}" method="post" action="{{ route('createorderpost') }}">
                           @csrf
-                          @if (isset($orderitems))
-                            <input name="inventoryitems" type="hidden" value="{{ json_encode($orderitems, TRUE)}}" />
-                          @endif
-                          <input name="inventoryitem" type="hidden" value="{{ $item->id }}" />
+                          <input name="orderdetails" type="hidden" value="{{ json_encode($orderdetails) }}" />
+                          <input name="itemid" type="hidden" value="{{ $item->id }}" />
                           <input class="w-100" type="submit" value="{{ $item->name }}"
                             @if ((isset($itemOccurences[$item->id]) && ($itemOccurences[$item->id] >= $item->count)) || $item->count <= 0)
                               disabled="true"
@@ -61,7 +63,7 @@
         <table class="table">
           <tbody>
             <tr>
-              <th>Item</th>
+              <th id="i">Item</th>
               <th>Price</th>
               <th>Notes</th>
               <th class="fit"></th>
@@ -77,8 +79,7 @@
                     <form method="post" action="{{ route('createorderpost') }}">
                       @csrf
                       <input name="orderdetailid" type="hidden" value="{{ $detail->id }}" />
-                      <input name="inventoryitems" type="hidden" value="{{ json_encode($orderitems)}}" />
-                      <input name="orderdetails" value="{{ json_encode($orderdetails) }}" type="hidden">
+                      <input name="orderdetails" type="hidden" value="{{ json_encode($orderdetails) }}" />
                       <input name="edit" type="submit" value="Edit" />
                     </form>
                   </td>
@@ -86,7 +87,7 @@
                     <form method="post" action="{{ route('createorderpost') }}">
                       @csrf
                       <input name="orderdetailid" type="hidden" value="{{ $detail->id }}" />
-                      <input name="inventoryitems" type="hidden" value="{{ json_encode($orderitems)}}" />
+                      <input name="orderdetails" type="hidden" value="{{ json_encode($orderdetails) }}" />
                       <input name="deletesubmit" type="submit" value="Delete" />
                     </form>
                   </td>
@@ -129,8 +130,7 @@
               <tr>
                 <td>
                   <input type="hidden" name="orderdetailid" value="{{ $_POST['orderdetailid'] }}"/>
-                  <input name="inventoryitems" type="hidden" value="{{ json_encode($orderitems)}}" />
-                  <input name="orderdetails" value="{{ json_encode($orderdetails) }}" type="hidden">
+                  <input name="orderdetails" type="hidden" value="{{ json_encode($orderdetails) }}" />
                   <input type="submit" name="editsubmit" value="Save"/>
                 </td>
               </tr>
@@ -141,7 +141,7 @@
           <form name="ordersubmitform" method="post" action="{{ route('storeorder') }}">
             @csrf
           	@isset($orderdetails)
-              <input name="orderdetails" value="{{ json_encode($orderdetails) }}" type="hidden">
+              <input name="orderdetails" type="hidden" value="{{ json_encode($orderdetails) }}" />
             @endisset
           	<button name="submitorder" type="submit" class="btn btn-primary">Submit</button>
           </form>
@@ -152,5 +152,39 @@
 @endsection
 
 @section('additional')
+  {{-- I'll be coming back to this script later. There's a problem where the javascript keeps exiting because
+  the form is being submitted while the ajax is trying is trying to run. --}}
+  {{-- <script>
+    $(document).ready(function(){
 
+      // Item button pressed
+      $(".add-item").submit(function(e) {
+
+        e.preventDefault();
+
+        var itemid = $(this).data('itemid');
+        var orderdetails = '{{ json_encode($orderdetails) }}';
+        var orderdetails = orderdetails.replace(/&quot;/g, '"');
+
+        $.ajax({
+          url: '/orders/ajaxRequest',
+          type: 'POST',
+          data: {
+            'orderdetails': orderdetails,
+            'itemid': itemid
+          },
+          success: function(data){
+            console.log(orderdetails);
+            console.log(itemid);
+            console.log('Success');
+          },
+          error: function(xhr) {
+             console.log('Request Status: ' + xhr.status + ' Status Text: ' + xhr.statusText + ' ' + xhr.responseText);
+           }
+        });
+
+      });
+
+    });
+  </script> --}}
 @endsection

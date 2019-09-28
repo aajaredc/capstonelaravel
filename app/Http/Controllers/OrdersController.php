@@ -37,69 +37,44 @@ class OrdersController extends Controller
       $items = InventoryItem::all();
       $types = InventoryType::all();
       $input = $request->all();
+      $itemid = request('itemid');
+      $orderdetailsDecoded = json_decode(request('orderdetails'), TRUE);
 
-
-      // This new order system prevents orders from being in the database before they're submitted
-
-      $orderdetails = array();
-      $orderdetailid = request('orderdetailid');
-      $orderdetailprice = request('price');
-      $orderdetailnote = request('note');
-
-      if ($request->has('inventoryitem') || $request->has('inventoryitems')) {
-        $inventoryitems = request('inventoryitems');
-
-        $orderitems = array(request('inventoryitem'));
-
-        if ($request->has('inventoryitem')) {
-
-          if ($request->has('inventoryitems')) {
-            $orderitems = array_values(json_decode($inventoryitems, true));
-            array_push($orderitems, request('inventoryitem'));
-          }
-        }
-        else {
-          $orderitems = array_values(json_decode($inventoryitems, true));
-          if ($request->has('deletesubmit')) {
-            unset($orderitems[$orderdetailid]);
-          }
-        }
-
-        if ($request->has('orderdetails')) {
-          $orderdetails = json_decode(request('orderdetails'), false);
-        } else {
-          foreach ($orderitems as $orderitem) {
-            $orderdetail = new OrderDetail();
-            $orderdetail->id = count($orderdetails); // temp id
-            $orderdetail->inventory_item_id = $orderitem;
-            // this doesn't work for some reason
-            // $orderdetail->price = $items->find($orderdetail->inventory_item_id)->value('price');
-            $orderdetail->price = DB::table('inventory_items')->where('id', $orderdetail->inventory_item_id)->value('price');
-            $orderdetail->note = NULL;
-
-            array_push($orderdetails, $orderdetail);
-          }
-        }
-
-
-        $itemOccurences = array_count_values($orderitems);
-
-        if ($request->has('editsubmit')) {
-          if ($request->has('price')) {
-            $orderdetails[$orderdetailid]->price = $orderdetailprice;
-          }
-          if ($request->has('note')) {
-            $orderdetails[$orderdetailid]->note = $orderdetailnote;
-          }
-        }
-      }
-
-
-      if (isset($orderitems)) {
-        return view('order.createorder', compact('itemOccurences', 'orderdetails', 'orderitems', 'items', 'types'));
+      if (request('orderdetails') === NULL) {
+        $orderdetails = array();
       } else {
-        return view('order.createorder', compact('items', 'types'));
+        $orderdetails = array();
+
+        for ($i=0; $i < count($orderdetailsDecoded); $i++) {
+          $detail = new OrderDetail();
+          $detail->id = count($orderdetails); // temp id
+          $detail->inventory_item_id = $orderdetailsDecoded[$i]['inventory_item_id'];
+          $detail->price = $orderdetailsDecoded[$i]['price'];
+          $detail->note = $orderdetailsDecoded[$i]['note'];
+
+          array_push($orderdetails, $detail);
+        }
       }
+
+
+      if ($request->has('itemid')) {
+        $detail = new OrderDetail();
+        $detail->id = count($orderdetails); // temp id
+        $detail->inventory_item_id = $itemid;
+        $detail->price = $items->find($itemid)->price;
+        $detail->note = NULL;
+
+        array_push($orderdetails, $detail);
+      }
+
+      if ($request->has('editsubmit')) {
+        $orderdetailid = request('orderdetailid');
+        $orderdetails[$orderdetailid]->price = request('price');
+        $orderdetails[$orderdetailid]->note = request('note');
+      }
+
+      return view('order.createorder', compact('orderdetails', 'items', 'types'));
+
     }
 
     /**
