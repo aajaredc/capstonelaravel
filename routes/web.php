@@ -43,6 +43,8 @@ Route::patch('/users/{user}', 'UsersController@update')->name('updateuser');
 Route::delete('/users/{user}', 'UsersController@destroy')->name('destroyuser');
 
 // Orders
+Route::get('/orders/close', 'OrdersController@closeindex')->name('closeorderindex'); // list orders to be closed
+Route::patch('/orders/{order}/close', 'OrdersController@close')->name('closeorder'); // close order
 Route::get('/orders', 'OrdersController@index')->name('indexorder');
 Route::get('/orders/create', 'OrdersController@create')->name('createorder');
 Route::post('/orders/create', 'OrdersController@create')->name('createorderpost');

@@ -34,18 +34,30 @@ class OrdersController extends Controller
      */
     public function create(Request $request)
     {
+      // Variables
       $items = InventoryItem::all();
       $types = InventoryType::all();
       $input = $request->all();
       $itemid = request('itemid');
-      $orderdetailsDecoded = json_decode(request('orderdetails'), TRUE);
+      $orderdetailsDecoded = json_decode(request('orderdetails'), TRUE); // array of every order detail added so far
+      $orderdetailid = request('orderdetailid');
+      $itemOccurences = array(); // number of each item that is ordered
 
       if (request('orderdetails') === NULL) {
+        // Start of the order
         $orderdetails = array();
       } else {
+        // Convert current order details to array
         $orderdetails = array();
 
         for ($i=0; $i < count($orderdetailsDecoded); $i++) {
+          // Check for button delete
+          if ($request->has('deletesubmit')) {
+            if ($orderdetailid == $i) {
+              continue;
+            }
+          }
+
           $detail = new OrderDetail();
           $detail->id = count($orderdetails); // temp id
           $detail->inventory_item_id = $orderdetailsDecoded[$i]['inventory_item_id'];
@@ -56,7 +68,7 @@ class OrdersController extends Controller
         }
       }
 
-
+      // Add new detail to array of order details
       if ($request->has('itemid')) {
         $detail = new OrderDetail();
         $detail->id = count($orderdetails); // temp id
@@ -67,13 +79,21 @@ class OrdersController extends Controller
         array_push($orderdetails, $detail);
       }
 
+      // Get and set the number of each item that is ordered
+      foreach ($orderdetails as $orderdetail) {
+        array_push($itemOccurences, $orderdetail->inventory_item_id);
+      }
+      $itemOccurences = array_count_values($itemOccurences);
+
+      // Edit button is pressed
       if ($request->has('editsubmit')) {
         $orderdetailid = request('orderdetailid');
         $orderdetails[$orderdetailid]->price = request('price');
         $orderdetails[$orderdetailid]->note = request('note');
       }
 
-      return view('order.createorder', compact('orderdetails', 'items', 'types'));
+      // Return
+      return view('order.createorder', compact('itemOccurences', 'orderdetails', 'items', 'types'));
 
     }
 
@@ -124,6 +144,7 @@ class OrdersController extends Controller
             ->withErrors($validator);
       }
 
+      // Add the order to the database
       $order = new Order();
       $order->user_id = Auth::user()->id;
       $order->location_id = Auth::user()->location_id;
@@ -131,6 +152,7 @@ class OrdersController extends Controller
       $order->save();
 
       foreach ($orderdetails as $detail) {
+        // Add the order details to the database
         $orderdetail = new OrderDetail();
         $orderdetail->order_id = $order->id;
         $orderdetail->inventory_item_id = $detail->inventory_item_id;
@@ -138,9 +160,16 @@ class OrdersController extends Controller
         $orderdetail->note = $detail->note;
         $orderdetail->complete = false;
         $orderdetail->save();
+
+        // Remove item from database when it is ordered
+        $inventoryItem = InventoryItem::find($orderdetail->inventory_item_id);
+        $inventoryItem->count = $inventoryItem->count - 1;
+        $inventoryItem->save();
       }
 
-      dd($order);
+      // Feedback
+      $created = true;
+      return redirect('/orders/' . $order->id)->with('created', $order);
     }
 
     /**
@@ -151,11 +180,7 @@ class OrdersController extends Controller
      */
     public function show(Order $order)
     {
-      $user = User::find($order->user_id);
-      $location = Location::find($order->location_id);
-      $details = OrderDetail::all()->where('order_id', $order->id);
-
-      return view('order.showorder', compact('details', 'order', 'user', 'location'));
+      return view('order.showorder', compact('order'));
     }
 
     /**
@@ -199,5 +224,37 @@ class OrdersController extends Controller
       }
 
       return redirect('/orders')->with('deleted', $order);
+    }
+
+    /**
+     * List orders that are to be closed
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function closeindex()
+    {
+      $orders = Order::where('complete', 0)->get();
+
+      return view('order.closeorders', compact('orders'));
+    }
+
+    /**
+     * Close the specified Order
+     *
+     * @param \App\Order $order
+     * @return \Illuminate\Http\Response
+     */
+    public function close(Order $order)
+    {
+      $details = OrderDetail::where('order_id', $order->id)->get();
+      foreach ($details as $detail) {
+        $detail->complete = 1;
+        $detail->save();
+      }
+
+      $order->complete = 1;
+      $order->save();
+
+      return redirect('/orders/close')->with('closed', $order);
     }
 }

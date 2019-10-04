@@ -40,7 +40,7 @@
 		<div id="main-wrapper">
 			<ul id="sidebar" style="display: flex;" class="sidebar navbar-nav">
 				<li class="nav-item">
-					<a class="nav-link" href="index.php">
+					<a class="nav-link" href="/">
 						<i class="fas fa-fw fa-home"></i>
 						<span>Home</span>
 					</a>
@@ -65,25 +65,21 @@
 						<a class="dropdown-item" href="/usertypes">Types</a>
 					</div>
 				</li>
-                <li class="nav-item dropdown">
+        <li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="fas fa-fw fa-users"></i>
-						<span>Location</span>
-					</a>
-					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="/users">Users</a>
-						<a class="dropdown-item" href="/usertypes">Types</a>
-					</div>
-				</li>
-                <li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-						<i class="fas fa-fw fa-users"></i>
+						<i class="fas fa-fw fa-pallet"></i>
 						<span>Orders</span>
 					</a>
 					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="/users">Users</a>
-						<a class="dropdown-item" href="/usertypes">Types</a>
+						<a class="dropdown-item" href="/orders">Orders</a>
+						<a class="dropdown-item" href="/orders/close">Open Orders</a>
 					</div>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/locations">
+						<i class="fas fa-fw fa-location-arrow"></i>
+						<span>Locations</span>
+					</a>
 				</li>
 			</ul>
 			<div id="wrapper">

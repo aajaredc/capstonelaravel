@@ -1,6 +1,11 @@
 @extends('layouts.main')
 
 @section('content')
+  @php
+    $user = \App\User::find($order->user_id);
+    $location = \App\Location::find($order->location_id);
+    $details = \App\OrderDetail::all()->where('order_id', $order->id);
+  @endphp
   <ol class="breadcrumb">
   	<li class="breadcrumb-item"><a href="/orders">Orders</a></li>
     <li class="breadcrumb-item active" aria-current="page">Show</li>
@@ -10,6 +15,16 @@
   	<div class="card-body">
       @if (session()->has('created'))
         <div class="alert alert-success" role="alert">Successfully created new Order</div>
+        <div class="row my-3">
+          <div class="col-12">
+            <a href="/orders/create" class="btn btn-primary">New Order</a>
+            <form method="post" action="/orders/{{ $order->id }}/close" class="d-inline-block">
+              {{ method_field('PATCH') }}
+              @csrf
+              <input class="btn btn-primary" type="submit" value="Close Order"/>
+            </form>
+          </div>
+        </div>
       @endif
       @if (session()->has('updated'))
         <div class="alert alert-success" role="alert">Successfully updated Order</div>
