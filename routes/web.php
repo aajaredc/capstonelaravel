@@ -53,3 +53,12 @@ Route::post('/orders', 'OrdersController@store')->name('storeorder');
 Route::get('/orders/{order}/edit', 'OrdersController@edit')->name('editorder');
 Route::patch('/orders/{order}', 'OrdersController@update')->name('updateorder');
 Route::delete('/orders/{order}', 'OrdersController@destroy')->name('destroyorder');
+
+// Locations
+Route::get('/locations', 'LocationsController@index')->name('indexlocation');
+Route::get('/locations/create', 'LocationsController@create')->name('createlocation');
+Route::get('/locations/{location}', 'LocationsController@show')->name('showlocation');
+Route::post('/locations', 'LocationsController@store')->name('storelocation');
+Route::get('/locations/{location}/edit', 'LocationsController@edit')->name('editlocation');
+Route::patch('/locations/{location}', 'LocationsController@update')->name('updatelocation');
+Route::delete('/locations/{location}', 'LocationsController@destroy')->name('destroylocation');

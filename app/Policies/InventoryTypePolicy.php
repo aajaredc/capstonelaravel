@@ -21,7 +21,7 @@ class InventoryTypePolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 16) {
+      if ($permission & 16) {
         return true;
       } else {
         return false;
@@ -38,7 +38,7 @@ class InventoryTypePolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 16) {
+      if ($permission & 16) {
         return true;
       } else {
         return false;
@@ -55,7 +55,7 @@ class InventoryTypePolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 32) {
+      if ($permission & 32) {
         return true;
       } else {
         return false;
@@ -72,7 +72,7 @@ class InventoryTypePolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 64) {
+      if ($permission & 64) {
         return true;
       } else {
         return false;
@@ -89,7 +89,7 @@ class InventoryTypePolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 128) {
+      if ($permission & 128) {
         return true;
       } else {
         return false;

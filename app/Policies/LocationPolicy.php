@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\User;
 use App\Location;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Session;
 
 class LocationPolicy
 {
@@ -18,7 +19,13 @@ class LocationPolicy
      */
     public function viewAny(User $user)
     {
-        //
+      $permission = Session::get('permission');
+
+      if ($permission & 65536) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**
@@ -28,9 +35,15 @@ class LocationPolicy
      * @param  \App\Location  $location
      * @return mixed
      */
-    public function view(User $user, Location $location)
+    public function view(User $user)
     {
-        //
+      $permission = Session::get('permission');
+
+      if ($permission & 65536) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**
@@ -41,7 +54,13 @@ class LocationPolicy
      */
     public function create(User $user)
     {
-        //
+      $permission = Session::get('permission');
+
+      if ($permission & 131072) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**
@@ -51,9 +70,15 @@ class LocationPolicy
      * @param  \App\Location  $location
      * @return mixed
      */
-    public function update(User $user, Location $location)
+    public function update(User $user)
     {
-        //
+      $permission = Session::get('permission');
+
+      if ($permission & 262144) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**
@@ -63,9 +88,15 @@ class LocationPolicy
      * @param  \App\Location  $location
      * @return mixed
      */
-    public function delete(User $user, Location $location)
+    public function delete(User $user)
     {
-        //
+      $permission = Session::get('permission');
+
+      if ($permission & 524288) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
     /**

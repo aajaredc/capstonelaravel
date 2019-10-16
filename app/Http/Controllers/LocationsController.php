@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Location;
+use Session;
 use Illuminate\Http\Request;
 
 class LocationsController extends Controller
@@ -14,7 +15,11 @@ class LocationsController extends Controller
      */
     public function index()
     {
-        //
+      $this->authorize('viewAny', Location::class);
+
+      $locations = Location::all();
+
+      return view('location.indexlocations', compact('locations'));
     }
 
     /**
@@ -24,7 +29,11 @@ class LocationsController extends Controller
      */
     public function create()
     {
-        //
+      $this->authorize('create', Location::class);
+
+      $locations = Location::all();
+
+      return view('location.createlocation', compact('locations'));
     }
 
     /**

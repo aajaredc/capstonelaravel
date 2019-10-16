@@ -20,7 +20,7 @@ class UserPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 256) {
+      if ($permission & 256) {
         return true;
       } else {
         return false;
@@ -37,7 +37,7 @@ class UserPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 256) {
+      if ($permission & 256) {
         return true;
       } else {
         return false;
@@ -54,7 +54,7 @@ class UserPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 512) {
+      if ($permission & 512) {
         return true;
       } else {
         return false;
@@ -71,7 +71,7 @@ class UserPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 1024) {
+      if ($permission & 1024) {
         return true;
       } else {
         return false;
@@ -88,7 +88,7 @@ class UserPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 2048) {
+      if ($permission & 2048) {
         return true;
       } else {
         return false;

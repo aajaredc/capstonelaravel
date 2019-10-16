@@ -22,6 +22,8 @@ class OrdersController extends Controller
      */
     public function index()
     {
+      $this->authorize('viewAny', Order::class);
+
       $orders = Order::all();
 
       return view('order.indexorders', compact('orders'));
@@ -34,6 +36,8 @@ class OrdersController extends Controller
      */
     public function create(Request $request)
     {
+      $this->authorize('create', Order::class);
+
       // Variables
       $items = InventoryItem::all();
       $types = InventoryType::all();
@@ -105,6 +109,8 @@ class OrdersController extends Controller
      */
     public function store(Request $request)
     {
+      $this->authorize('create', Order::class);
+
 
       try {
         $orderdetails = $request->orderdetails;
@@ -116,6 +122,7 @@ class OrdersController extends Controller
           array_push($itemOccurences, $detail->inventory_item_id);
         }
         $itemOccurences = array_count_values($itemOccurences);
+        // dd($itemOccurences);
       } catch (\Exception $e) {
 
       }
@@ -128,7 +135,8 @@ class OrdersController extends Controller
 
       try {
         foreach ($orderdetails as $detail) {
-          if ($itemOccurences[$detail->inventory_item_id] > InventoryItem::find($detail->inventory_item_id)->value('count')) {
+          // dd(InventoryItem::where('id', $detail->inventory_item_id)->value('count'));
+          if ($itemOccurences[$detail->inventory_item_id] > InventoryItem::where('id', $detail->inventory_item_id)->value('count')) {
             $validator->after(function ($validator) {
               $validator->errors()->add('invaliditemcount', 'An invalid number of items was ordered.');
             });
@@ -140,8 +148,7 @@ class OrdersController extends Controller
 
 
       if ($validator->fails()) {
-          return redirect('/orders/create')
-            ->withErrors($validator);
+          return redirect('/orders/create')->withErrors($validator);
       }
 
       // Add the order to the database
@@ -180,6 +187,8 @@ class OrdersController extends Controller
      */
     public function show(Order $order)
     {
+      $this->authorize('view', Order::class);
+
       return view('order.showorder', compact('order'));
     }
 
@@ -233,6 +242,8 @@ class OrdersController extends Controller
      */
     public function closeindex()
     {
+      $this->authorize('update', Order::class);
+
       $orders = Order::where('complete', 0)->get();
 
       return view('order.closeorders', compact('orders'));
@@ -246,6 +257,8 @@ class OrdersController extends Controller
      */
     public function close(Order $order)
     {
+      $this->authorize('update', Order::class);
+
       $details = OrderDetail::where('order_id', $order->id)->get();
       foreach ($details as $detail) {
         $detail->complete = 1;

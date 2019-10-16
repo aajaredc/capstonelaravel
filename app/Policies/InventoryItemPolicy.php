@@ -22,7 +22,7 @@ class InventoryItemPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 1) {
+      if ($permission & 1) {
         return true;
       } else {
         return false;
@@ -39,7 +39,7 @@ class InventoryItemPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 1) {
+      if ($permission & 1) {
         return true;
       } else {
         return false;
@@ -56,7 +56,7 @@ class InventoryItemPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 2) {
+      if ($permission & 2) {
         return true;
       } else {
         return false;
@@ -73,7 +73,7 @@ class InventoryItemPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 4) {
+      if ($permission & 4) {
         return true;
       } else {
         return false;
@@ -90,7 +90,7 @@ class InventoryItemPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 8) {
+      if ($permission & 8) {
         return true;
       } else {
         return false;

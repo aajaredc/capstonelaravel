@@ -21,7 +21,7 @@ class OrderPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 4096) {
+      if ($permission & 4096) {
         return true;
       } else {
         return false;
@@ -38,7 +38,7 @@ class OrderPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 4096) {
+      if ($permission & 4096) {
         return true;
       } else {
         return false;
@@ -55,7 +55,7 @@ class OrderPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 8192) {
+      if ($permission & 8192) {
         return true;
       } else {
         return false;
@@ -72,7 +72,7 @@ class OrderPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 16384) {
+      if ($permission & 16384) {
         return true;
       } else {
         return false;
@@ -89,7 +89,7 @@ class OrderPolicy
     {
       $permission = Session::get('permission');
 
-      if ($permission | 32768) {
+      if ($permission & 32768) {
         return true;
       } else {
         return false;
